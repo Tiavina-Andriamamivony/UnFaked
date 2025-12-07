@@ -6,25 +6,25 @@ import { useForm } from 'react-hook-form';
 import { toast } from "sonner"; // ← ajouté
 
 // Composant GradientButton
-function GradientButton({ children, onClick, disabled } : {children : ReactNode, onClick?: () => void, disabled?: boolean}) {
+function GradientButton({ children, onClick, disabled }: { children: ReactNode, onClick?: () => void, disabled?: boolean }) {
   return (
-    <button 
+    <button
       onClick={onClick}
       disabled={disabled}
       className="group relative px-8 py-4 bg-gradient-to-r from-red-600 to-orange-500 text-white font-bold text-lg rounded-full transition-all duration-300 hover:shadow-[0_15px_40px_rgba(255,69,0,0.6)] flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {children}
-      <svg 
-        className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" 
-        fill="none" 
-        stroke="currentColor" 
+      <svg
+        className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+        fill="none"
+        stroke="currentColor"
         viewBox="0 0 24 24"
       >
-        <path 
-          strokeLinecap="round" 
-          strokeLinejoin="round" 
-          strokeWidth={2} 
-          d="M13 7l5 5m0 0l-5 5m5-5H6" 
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M13 7l5 5m0 0l-5 5m5-5H6"
         />
       </svg>
     </button>
@@ -32,9 +32,9 @@ function GradientButton({ children, onClick, disabled } : {children : ReactNode,
 }
 
 // Composant Select simplifié
-function Select({ value, onChange } : SelectHTMLAttributes<HTMLSelectElement>) {
+function Select({ value, onChange }: SelectHTMLAttributes<HTMLSelectElement>) {
   return (
-    <select 
+    <select
       value={value}
       onChange={onChange}
       className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -72,12 +72,12 @@ export default function Tools() {
     try {
       const email = user.primaryEmailAddress.emailAddress;
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-      
+
       if (contentType === 'video' && file) {
         // Upload vidéo
         const formData = new FormData();
         formData.append('file', file);
-        
+
         const response = await fetch(
           `${baseUrl}/api/media/videos/upload?userEmail=a.razafindratelo@gmail.com`,
           {
@@ -93,12 +93,12 @@ export default function Tools() {
         const data = await response.json();
         console.log('Vidéo uploadée:', data);
         router.push('tools/report/video')
-        
+
       } else if (contentType === 'image' && file) {
         // Upload image
         const formData = new FormData();
         formData.append('file', file);
-        
+
         const response = await fetch(
           `${baseUrl}/api/media/images/upload?userEmail=${encodeURIComponent(email)}`,
           {
@@ -114,7 +114,7 @@ export default function Tools() {
         const data = await response.json();
         console.log('Image uploadée:', data);
         router.push('tools/report/image')
-        
+
       } else if (contentType === 'text' && textContent) {
         // Upload texte
         const response = await fetch(
@@ -135,7 +135,7 @@ export default function Tools() {
         const data = await response.json();
         console.log('Texte analysé:', data);
         router.push('tools/report/text')
-        
+
       } else if (contentType === 'article' && urlContent) {
         // Upload article (URL)
         const response = await fetch(
@@ -156,7 +156,7 @@ export default function Tools() {
         const data = await response.json();
         console.log('Article analysé:', data);
         router.push('tools/report/article')
-        
+
       } else {
         toast("Sélection requise", {
           description: "Veuillez sélectionner un contenu à analyser.",
@@ -174,7 +174,7 @@ export default function Tools() {
       toast.success("Analyse terminée 🎉", {
         description: "Votre contenu a été analysé avec succès.",
       });
-      
+
     } catch (error) {
       console.error('Erreur:', error);
       toast.error("Erreur", {
@@ -189,7 +189,7 @@ export default function Tools() {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       setFile(selectedFile);
-      
+
       const reader = new FileReader();
       reader.onloadend = (): void => {
         setPreview(reader.result as string);
@@ -207,9 +207,9 @@ export default function Tools() {
     if (contentType === 'image' && preview) {
       return (
         <div className="relative">
-          <img 
-            src={preview} 
-            alt="Aperçu" 
+          <img
+            src={preview}
+            alt="Aperçu"
             className="w-full h-auto max-h-96 object-contain rounded-xl"
           />
           <button
@@ -227,9 +227,9 @@ export default function Tools() {
     if (contentType === 'video' && preview) {
       return (
         <div className="relative">
-          <video 
-            src={preview} 
-            controls 
+          <video
+            src={preview}
+            controls
             className="w-full h-auto max-h-96 rounded-xl"
           />
           <button
@@ -268,10 +268,10 @@ export default function Tools() {
     }
 
     if (contentType === 'image' || contentType === 'video') {
-      const acceptTypes = contentType === 'image' 
-        ? 'image/jpeg,image/png,image/jpg,image/webp' 
+      const acceptTypes = contentType === 'image'
+        ? 'image/jpeg,image/png,image/jpg,image/webp'
         : 'video/mp4,video/webm,video/quicktime';
-      
+
       const formatText = contentType === 'image'
         ? '.jpg, .png, .webp'
         : '.mp4, .webm, .mov';
@@ -316,7 +316,7 @@ export default function Tools() {
           Détectez la fiabilité<br />de n'importe quel contenu
         </h1>
         <p className="text-gray-600 text-lg mt-4 max-w-2xl mx-auto">
-          Analysez des images, vidéos, textes ou articles pour repérer  
+          Analysez des images, vidéos, textes ou articles pour repérer
           les contenus manipulés ou générés par IA.
         </p>
       </section>
@@ -332,7 +332,13 @@ export default function Tools() {
               <label className="block mb-2 text-gray-700 font-medium">
                 Type de contenu à analyser
               </label>
-              <Select value={contentType} onChange={(e) => setContentType(e.target.value)} />
+              <Select value={contentType} onChange={(e) => {
+                const type = e.target.value;
+                if (type === 'image') {
+                  router.push('/image-analysis');
+                }
+                setContentType(type);
+              }} />
             </div>
 
             <div className="mb-8">
