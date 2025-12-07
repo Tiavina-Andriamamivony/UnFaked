@@ -44,6 +44,7 @@ function Select({ value, onChange }: SelectHTMLAttributes<HTMLSelectElement>) {
       <option value="video">🎥 Vidéo</option>
       <option value="text">✏️ Texte</option>
       <option value="article">📰 Article (URL)</option>
+      <option value="fact-check">⚖️ Fact-Checking / Rumeurs</option>
     </select>
   );
 }
@@ -58,6 +59,8 @@ export default function Tools() {
   const [textContent, setTextContent] = useState('');
   const [urlContent, setUrlContent] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // ... (existing code)
 
   const onSubmit = async () => {
     if (!user?.primaryEmailAddress?.emailAddress) {
@@ -336,6 +339,8 @@ export default function Tools() {
                 const type = e.target.value;
                 if (type === 'image') {
                   router.push('/image-analysis');
+                } else if (type === 'fact-check') {
+                  router.push('/fact-checking');
                 }
                 setContentType(type);
               }} />
