@@ -2,6 +2,7 @@
 import { ShieldCheck, Zap, ScanLine, FileSearch, Smartphone, Cpu, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 export default function Features() {
@@ -86,11 +87,15 @@ export default function Features() {
                                 </Link>
                             </div>
                             {/* Phone Mockup Representation */}
-                            <div className="relative w-32 h-64 border-4 border-neutral-800 rounded-[2rem] bg-neutral-900 shadow-xl flex items-center justify-center overflow-hidden">
-                                <div className="absolute top-0 w-20 h-4 bg-neutral-800 rounded-b-xl z-20" />
-                                <div className="w-full h-full bg-gradient-to-b from-[#ff1101]/20 to-neutral-900 flex items-center justify-center">
-                                    <ShieldCheck className="size-12 text-[#ff1101]" />
-                                </div>
+                            <div className="relative border-4 border-neutral-800 rounded-[2.5rem] bg-neutral-900 shadow-xl flex items-center justify-center overflow-hidden">
+                                <div className="absolute top-0 w-24 h-5 bg-neutral-800 rounded-b-xl z-20" />
+                                <Image
+                                    src="/phone.jpg"
+                                    alt="UnFaked Mobile App Interface"
+                                    width={280}
+                                    height={580}
+                                    className="w-auto h-72 object-cover bg-neutral-900"
+                                />
                             </div>
                         </div>
                     </div>
@@ -119,7 +124,7 @@ export default function Features() {
                                     </li>
                                     <li className="flex items-center gap-2 text-sm text-muted-foreground">
                                         <div className="size-1.5 rounded-full bg-white" />
-                                        <span>Next.js 14 (Web)</span>
+                                        <span>Next.js 16 (Web)</span>
                                     </li>
                                 </ul>
                             </div>

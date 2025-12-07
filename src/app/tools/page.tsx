@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { ScanLine, FileSearch, Video, FileText, Lock, ArrowRight, ShieldCheck, Smartphone } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -134,28 +135,40 @@ export default function ToolsPage() {
         </div>
 
         {/* Mobile App Banner */}
-        <div className="mt-16 bg-neutral-900 rounded-3xl p-8 md:p-12 text-white relative overflow-hidden">
+        <div className="mt-16 bg-neutral-900 rounded-3xl p-8 md:p-12 text-white relative overflow-hidden flex flex-col md:flex-row items-center gap-12">
           <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-l from-[#ff1101]/20 to-transparent pointer-events-none" />
 
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="space-y-4 max-w-xl">
+          <div className="relative z-10 space-y-8 max-w-xl flex-1">
+            <div className="space-y-4">
               <div className="flex items-center gap-2 text-[#ff1101] font-mono text-sm uppercase tracking-wider font-bold">
                 <Smartphone className="size-4" />
                 Available Now
               </div>
-              <h2 className="text-3xl font-bold">Download the UnFaked Mobile App</h2>
+              <h2 className="text-3xl md:text-4xl font-bold leading-tight">Download the UnFaked Mobile App</h2>
               <p className="text-neutral-400 text-lg">
                 Take our detection engine with you. Authenticate media on the go directly from your smartphone.
               </p>
             </div>
-            <div className="flex-shrink-0">
-              <Button
-                size="lg"
-                className="bg-[#ff1101] hover:bg-[#ff1101]/90 text-white font-bold rounded-full px-8 py-6 shadow-[0_0_30px_-5px_#ff1101]"
-                onClick={() => window.open('https://expo.dev', '_blank')}
-              >
-                Get it on Expo
-              </Button>
+
+            <Button
+              size="lg"
+              className="bg-[#ff1101] hover:bg-[#ff1101]/90 text-white font-bold rounded-full px-8 py-6 shadow-[0_0_30px_-5px_#ff1101]"
+              onClick={() => window.open('https://expo.dev/accounts/tsanta22kyle/projects/unfaked-mobile/builds/823f130b-1c68-4f68-8a0a-44bdc89395cc?fbclid=IwY2xjawOiBupleHRuA2FlbQIxMABicmlkETFhdndnNnh1T2hETDlMQnhZc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHjwMEA3lARA3UaBHcZMX_Ba8cmYKghoiI86briZH7ktL3jEdU9bTh7U2psZv_aem_uG4sobAonFQnHcSWi9R6HA', '_blank')}
+            >
+              Get it on Expo
+            </Button>
+          </div>
+
+          <div className="relative z-10 hidden md:block rotate-6 hover:rotate-0 transition-transform duration-500 origin-bottom-right">
+            <div className="relative border-[6px] border-neutral-800 rounded-[2.5rem] bg-neutral-900 shadow-2xl overflow-hidden">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-neutral-800 rounded-b-xl z-20" />
+              <Image
+                src="/phone.jpg"
+                alt="UnFaked App Screenshot"
+                width={240}
+                height={480}
+                className="h-[400px] w-auto object-cover opacity-90 hover:opacity-100 transition-opacity"
+              />
             </div>
           </div>
         </div>
