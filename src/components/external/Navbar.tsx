@@ -29,9 +29,6 @@ export function Navbar() {
       <Link href="/tools" className="hover:text-foreground transition-colors">
         Tools
       </Link>
-      <Link href="/demo" className="hover:text-foreground transition-colors">
-        How it works
-      </Link>
     </nav>
   );
 

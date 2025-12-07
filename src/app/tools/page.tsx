@@ -1,382 +1,166 @@
-'use client'
-import { useUser } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
-import { ReactNode, SelectHTMLAttributes, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from "sonner"; // ← ajouté
+"use client";
 
-// Composant GradientButton
-function GradientButton({ children, onClick, disabled }: { children: ReactNode, onClick?: () => void, disabled?: boolean }) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className="group relative px-8 py-4 bg-gradient-to-r from-red-600 to-orange-500 text-white font-bold text-lg rounded-full transition-all duration-300 hover:shadow-[0_15px_40px_rgba(255,69,0,0.6)] flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {children}
-      <svg
-        className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M13 7l5 5m0 0l-5 5m5-5H6"
-        />
-      </svg>
-    </button>
-  );
-}
+import { useRouter } from "next/navigation";
+import { ScanLine, FileSearch, Video, FileText, Lock, ArrowRight, ShieldCheck, Smartphone } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-// Composant Select simplifié
-function Select({ value, onChange }: SelectHTMLAttributes<HTMLSelectElement>) {
-  return (
-    <select
-      value={value}
-      onChange={onChange}
-      className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
-    >
-      <option value="">Choisir un type (image, vidéo, texte…)</option>
-      <option value="image">🖼 Image</option>
-      <option value="video">🎥 Vidéo</option>
-      <option value="text">✏️ Texte</option>
-      <option value="article">📰 Article (URL)</option>
-      <option value="fact-check">⚖️ Fact-Checking / Rumeurs</option>
-    </select>
-  );
-}
-
-export default function Tools() {
-  const { user } = useUser();
-  const { handleSubmit } = useForm();
+export default function ToolsPage() {
   const router = useRouter();
-  const [contentType, setContentType] = useState('');
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [textContent, setTextContent] = useState('');
-  const [urlContent, setUrlContent] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  // ... (existing code)
-
-  const onSubmit = async () => {
-    if (!user?.primaryEmailAddress?.emailAddress) {
-      toast.error("Connexion requise", {
-        description: "Vous devez être connecté pour analyser du contenu.",
-      });
-      return;
+  const tools = [
+    {
+      title: "Scanner Module",
+      description: "Analyze images for manipulation, deepfakes, and metadata anomalies using local AI.",
+      icon: ScanLine,
+      href: "/image-analysis",
+      active: true,
+      color: "text-[#ff1101]",
+      bgColor: "bg-[#ff1101]/10",
+      borderColor: "hover:border-[#ff1101]/50",
+      cta: "Analyze Image"
+    },
+    {
+      title: "Fact-Checking Engine",
+      description: "Cross-reference claims and rumors against a global database of trusted sources.",
+      icon: FileSearch,
+      href: "/fact-checking",
+      active: true,
+      color: "text-blue-500",
+      bgColor: "bg-blue-500/10",
+      borderColor: "hover:border-blue-500/50",
+      cta: "Verify Claim"
+    },
+    {
+      title: "Video Forensics",
+      description: "Frame-by-frame analysis to detect face swaps and generative video content.",
+      icon: Video,
+      href: "#",
+      active: false,
+      color: "text-muted-foreground",
+      bgColor: "bg-muted",
+      borderColor: "border-border/50",
+      cta: "Coming Soon"
+    },
+    {
+      title: "Text Analysis",
+      description: "Detect LLM-generated text patterns and stylistic inconsistencies.",
+      icon: FileText,
+      href: "#",
+      active: false,
+      color: "text-muted-foreground",
+      bgColor: "bg-muted",
+      borderColor: "border-border/50",
+      cta: "Coming Soon"
     }
-
-    setLoading(true);
-
-    try {
-      const email = user.primaryEmailAddress.emailAddress;
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
-      if (contentType === 'video' && file) {
-        // Upload vidéo
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const response = await fetch(
-          `${baseUrl}/api/media/videos/upload?userEmail=a.razafindratelo@gmail.com`,
-          {
-            method: 'POST',
-            body: formData,
-          }
-        );
-
-        if (!response.ok) {
-          const error = await response.json().catch(() => ({ message: 'Upload failed' }));
-          throw new Error(error.message || 'Erreur lors de l\'upload de la vidéo');
-        }
-        const data = await response.json();
-        console.log('Vidéo uploadée:', data);
-        router.push('tools/report/video')
-
-      } else if (contentType === 'image' && file) {
-        // Upload image
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const response = await fetch(
-          `${baseUrl}/api/media/images/upload?userEmail=${encodeURIComponent(email)}`,
-          {
-            method: 'POST',
-            body: formData,
-          }
-        );
-
-        if (!response.ok) {
-          const error = await response.json().catch(() => ({ message: 'Upload failed' }));
-          throw new Error(error.message || 'Erreur lors de l\'upload de l\'image');
-        }
-        const data = await response.json();
-        console.log('Image uploadée:', data);
-        router.push('tools/report/image')
-
-      } else if (contentType === 'text' && textContent) {
-        // Upload texte
-        const response = await fetch(
-          `${baseUrl}/api/media/text/upload?userEmail=${encodeURIComponent(email)}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ text: textContent }),
-          }
-        );
-
-        if (!response.ok) {
-          const error = await response.json().catch(() => ({ message: 'Analysis failed' }));
-          throw new Error(error.message || 'Erreur lors de l\'analyse du texte');
-        }
-        const data = await response.json();
-        console.log('Texte analysé:', data);
-        router.push('tools/report/text')
-
-      } else if (contentType === 'article' && urlContent) {
-        // Upload article (URL)
-        const response = await fetch(
-          `${baseUrl}/api/media/article/upload?userEmail=${encodeURIComponent(email)}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ url: urlContent }),
-          }
-        );
-
-        if (!response.ok) {
-          const error = await response.json().catch(() => ({ message: 'Analysis failed' }));
-          throw new Error(error.message || 'Erreur lors de l\'analyse de l\'article');
-        }
-        const data = await response.json();
-        console.log('Article analysé:', data);
-        router.push('tools/report/article')
-
-      } else {
-        toast("Sélection requise", {
-          description: "Veuillez sélectionner un contenu à analyser.",
-        });
-        setLoading(false);
-        return;
-      }
-
-      // Réinitialiser le formulaire après succès
-      setFile(null);
-      setPreview(null);
-      setTextContent('');
-      setUrlContent('');
-
-      toast.success("Analyse terminée 🎉", {
-        description: "Votre contenu a été analysé avec succès.",
-      });
-
-    } catch (error) {
-      console.error('Erreur:', error);
-      toast.error("Erreur", {
-        description: error instanceof Error ? error.message : "Une erreur est survenue.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-
-      const reader = new FileReader();
-      reader.onloadend = (): void => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(selectedFile);
-    }
-  };
-
-  const handleRemoveFile = () => {
-    setFile(null);
-    setPreview(null);
-  };
-
-  const renderUploadSection = () => {
-    if (contentType === 'image' && preview) {
-      return (
-        <div className="relative">
-          <img
-            src={preview}
-            alt="Aperçu"
-            className="w-full h-auto max-h-96 object-contain rounded-xl"
-          />
-          <button
-            onClick={handleRemoveFile}
-            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      );
-    }
-
-    if (contentType === 'video' && preview) {
-      return (
-        <div className="relative">
-          <video
-            src={preview}
-            controls
-            className="w-full h-auto max-h-96 rounded-xl"
-          />
-          <button
-            onClick={handleRemoveFile}
-            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      );
-    }
-
-    if (contentType === 'text') {
-      return (
-        <textarea
-          value={textContent}
-          onChange={(e) => setTextContent(e.target.value)}
-          placeholder="Collez ou saisissez votre texte ici..."
-          className="w-full h-48 p-4 border-2 border-gray-300 rounded-xl resize-none focus:outline-none focus:border-orange-500 transition text-gray-700"
-        />
-      );
-    }
-
-    if (contentType === 'article') {
-      return (
-        <input
-          type="url"
-          value={urlContent}
-          onChange={(e) => setUrlContent(e.target.value)}
-          placeholder="https://exemple.com/article"
-          className="w-full p-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-orange-500 transition text-gray-700"
-        />
-      );
-    }
-
-    if (contentType === 'image' || contentType === 'video') {
-      const acceptTypes = contentType === 'image'
-        ? 'image/jpeg,image/png,image/jpg,image/webp'
-        : 'video/mp4,video/webm,video/quicktime';
-
-      const formatText = contentType === 'image'
-        ? '.jpg, .png, .webp'
-        : '.mp4, .webm, .mov';
-
-      return (
-        <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-[#FF6A5A] transition">
-          <input
-            type="file"
-            accept={acceptTypes}
-            className="hidden"
-            id="fileInput"
-            onChange={handleFileChange}
-          />
-          <label htmlFor="fileInput" className="cursor-pointer">
-            <div className="text-6xl mb-4">
-              {contentType === 'image' ? '🖼️' : '🎥'}
-            </div>
-            <p className="text-lg font-medium text-gray-700">
-              Cliquez pour sélectionner {contentType === 'image' ? 'une image' : 'une vidéo'}
-            </p>
-            <p className="text-sm text-gray-500 mt-1">
-              Formats supportés : {formatText}
-            </p>
-          </label>
-        </div>
-      );
-    }
-
-    return (
-      <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
-        <p className="text-lg font-medium text-gray-500">
-          Sélectionnez d'abord un type de contenu
-        </p>
-      </div>
-    );
-  };
+  ];
 
   return (
-    <main className="min-h-screen bg-[#FAFAFA] flex flex-col items-center px-6">
-      <section className="text-center mt-10">
-        <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
-          Détectez la fiabilité<br />de n'importe quel contenu
-        </h1>
-        <p className="text-gray-600 text-lg mt-4 max-w-2xl mx-auto">
-          Analysez des images, vidéos, textes ou articles pour repérer
-          les contenus manipulés ou générés par IA.
-        </p>
-      </section>
+    <main className="min-h-screen bg-[#FAFAFA] py-24 px-4">
+      <div className="max-w-6xl mx-auto space-y-12">
 
-      <section className="mt-12 w-full flex justify-center">
-        <div className="bg-white p-8 rounded-3xl shadow-xl max-w-3xl w-full">
-          <h2 className="text-2xl font-semibold mb-6 text-gray-800 text-center">
-            Analyse intelligente de contenu
-          </h2>
+        {/* Header */}
+        <div className="text-center space-y-4 max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900">
+            UnFaked <span className="text-[#ff1101]">Toolbox</span>
+          </h1>
+          <p className="text-xl text-gray-600">
+            Access our suite of forensic tools. Select a module below to start detecting misinformation.
+          </p>
+        </div>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-6">
-              <label className="block mb-2 text-gray-700 font-medium">
-                Type de contenu à analyser
-              </label>
-              <Select value={contentType} onChange={(e) => {
-                const type = e.target.value;
-                if (type === 'image') {
-                  router.push('/image-analysis');
-                } else if (type === 'fact-check') {
-                  router.push('/fact-checking');
-                }
-                setContentType(type);
-              }} />
+        {/* Tools Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+          {tools.map((tool, index) => (
+            <div
+              key={index}
+              onClick={() => tool.active && router.push(tool.href)}
+              className={cn(
+                "relative group overflow-hidden rounded-3xl border-2 transition-all duration-300",
+                tool.active
+                  ? `bg-white border-transparent shadow-xl hover:shadow-2xl cursor-pointer ${tool.borderColor}`
+                  : "bg-gray-100 border-gray-200 opacity-80 cursor-not-allowed"
+              )}
+            >
+              <div className="p-8 h-full flex flex-col justify-between relative z-10">
+
+                <div className="space-y-6">
+                  {/* Icon & Badge */}
+                  <div className="flex items-start justify-between">
+                    <div className={cn("size-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110", tool.bgColor)}>
+                      <tool.icon className={cn("size-7", tool.color)} />
+                    </div>
+                    {!tool.active && (
+                      <Badge variant="secondary" className="bg-gray-200 text-gray-500 font-mono">Development</Badge>
+                    )}
+                    {tool.active && (
+                      <Badge variant="outline" className={cn("font-mono border opacity-0 group-hover:opacity-100 transition-opacity", tool.color, tool.borderColor)}>Live v1.0</Badge>
+                    )}
+                  </div>
+
+                  {/* Text */}
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:translate-x-1 transition-transform">{tool.title}</h3>
+                    <p className="text-gray-500 leading-relaxed">
+                      {tool.description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Footer / CTA */}
+                <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">
+                  <span className={cn("font-bold text-sm tracking-wide uppercase", tool.active ? "text-gray-900" : "text-gray-400")}>
+                    {tool.cta}
+                  </span>
+                  {tool.active && (
+                    <div className={cn("size-10 rounded-full flex items-center justify-center text-white transition-all transform group-hover:translate-x-2", tool.title.includes("Fact") ? "bg-blue-600" : "bg-[#ff1101]")}>
+                      <ArrowRight className="size-5" />
+                    </div>
+                  )}
+                  {!tool.active && (
+                    <Lock className="size-5 text-gray-400" />
+                  )}
+                </div>
+              </div>
+
+              {/* Decorative Gradient Background for active cards */}
+              {tool.active && (
+                <div className={cn("absolute -bottom-24 -right-24 w-64 h-64 rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-opacity pointer-events-none", tool.title.includes("Fact") ? "bg-blue-500" : "bg-[#ff1101]")} />
+              )}
             </div>
+          ))}
+        </div>
 
-            <div className="mb-8">
-              <label className="block mb-2 text-gray-700 font-medium">
-                Contenu à analyser
-              </label>
-              {renderUploadSection()}
+        {/* Mobile App Banner */}
+        <div className="mt-16 bg-neutral-900 rounded-3xl p-8 md:p-12 text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-l from-[#ff1101]/20 to-transparent pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="space-y-4 max-w-xl">
+              <div className="flex items-center gap-2 text-[#ff1101] font-mono text-sm uppercase tracking-wider font-bold">
+                <Smartphone className="size-4" />
+                Available Now
+              </div>
+              <h2 className="text-3xl font-bold">Download the UnFaked Mobile App</h2>
+              <p className="text-neutral-400 text-lg">
+                Take our detection engine with you. Authenticate media on the go directly from your smartphone.
+              </p>
             </div>
-
-            <div className="flex justify-center">
-              <GradientButton disabled={loading}>
-                {loading ? 'Analyse en cours...' : 'Analyser le contenu'}
-              </GradientButton>
+            <div className="flex-shrink-0">
+              <Button
+                size="lg"
+                className="bg-[#ff1101] hover:bg-[#ff1101]/90 text-white font-bold rounded-full px-8 py-6 shadow-[0_0_30px_-5px_#ff1101]"
+                onClick={() => window.open('https://expo.dev', '_blank')}
+              >
+                Get it on Expo
+              </Button>
             </div>
-          </form>
+          </div>
         </div>
-      </section>
 
-      <section className="flex flex-wrap gap-4 justify-center mt-10">
-        <div className="px-6 py-3 bg-white shadow rounded-full text-gray-700 font-medium">
-          ✔ 10 000+ contenus analysés
-        </div>
-        <div className="px-6 py-3 bg-white shadow rounded-full text-gray-700 font-medium">
-          ✔ Détection IA avancée
-        </div>
-        <div className="px-6 py-3 bg-white shadow rounded-full text-gray-700 font-medium">
-          ✔ 100% gratuit
-        </div>
-      </section>
-
-      <footer className="mt-16 py-8 text-gray-500 text-sm text-center border-t w-full">
-        UnFaked © 2025
-      </footer>
+      </div>
     </main>
   );
 }
