@@ -3,11 +3,9 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ScanLine, FileSearch, Video, FileText, Lock, ArrowRight, ShieldCheck, Smartphone } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { MOBILE_APP_URL } from "@/lib/constants";
 
 
 export default function ToolsPage() {
@@ -155,7 +153,7 @@ export default function ToolsPage() {
             <Button
               size="lg"
               className="bg-[#ff1101] hover:bg-[#ff1101]/90 text-white font-bold rounded-full px-8 py-6 shadow-[0_0_30px_-5px_#ff1101]"
-              onClick={() => window.open(MOBILE_APP_URL, '_blank')}
+              onClick={() => window.open('https://expo.dev/accounts/tsanta22kyle/projects/unfaked-mobile/builds/2c2e837f-0f13-4bf1-b561-c4017d97b32a', '_blank')}
             >
               Get it on Expo
             </Button>
