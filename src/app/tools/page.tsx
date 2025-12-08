@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { MOBILE_APP_URL } from "@/lib/constants";
+
 
 export default function ToolsPage() {
   const router = useRouter();
@@ -153,7 +155,7 @@ export default function ToolsPage() {
             <Button
               size="lg"
               className="bg-[#ff1101] hover:bg-[#ff1101]/90 text-white font-bold rounded-full px-8 py-6 shadow-[0_0_30px_-5px_#ff1101]"
-              onClick={() => window.open('https://expo.dev/accounts/tsanta22kyle/projects/unfaked-mobile/builds/823f130b-1c68-4f68-8a0a-44bdc89395cc?fbclid=IwY2xjawOiBupleHRuA2FlbQIxMABicmlkETFhdndnNnh1T2hETDlMQnhZc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHjwMEA3lARA3UaBHcZMX_Ba8cmYKghoiI86briZH7ktL3jEdU9bTh7U2psZv_aem_uG4sobAonFQnHcSWi9R6HA', '_blank')}
+              onClick={() => window.open(MOBILE_APP_URL, '_blank')}
             >
               Get it on Expo
             </Button>

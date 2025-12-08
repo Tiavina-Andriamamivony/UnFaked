@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { MOBILE_APP_URL } from "@/lib/constants";
 
 export default function Features() {
     return (
@@ -80,7 +81,7 @@ export default function Features() {
                                 <p className="text-muted-foreground leading-relaxed mb-6">
                                     Truth doesn't wait. Take our advanced detection algorithms with you anywhere. Built with <strong>React Native</strong> for seamless performance on iOS and Android.
                                 </p>
-                                <Link href="https://expo.dev/accounts/tsanta22kyle/projects/unfaked-mobile/builds/823f130b-1c68-4f68-8a0a-44bdc89395cc?fbclid=IwY2xjawOiBupleHRuA2FlbQIxMABicmlkETFhdndnNnh1T2hETDlMQnhZc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHjwMEA3lARA3UaBHcZMX_Ba8cmYKghoiI86briZH7ktL3jEdU9bTh7U2psZv_aem_uG4sobAonFQnHcSWi9R6HA" target="_blank" rel="noopener noreferrer">
+                                <Link href={MOBILE_APP_URL} target="_blank" rel="noopener noreferrer">
                                     <Button className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-900/20 rounded-full">
                                         Download on Expo Go
                                     </Button>
